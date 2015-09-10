@@ -1,45 +1,37 @@
 package com.madrona.hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "employee")
-public class Employee {
+public class Employee implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name="age")
+    @Column(name = "age")
     private Integer age;
 
     public Employee() {
     }
 
-    public Employee(Integer id, String name, Integer age) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-    }
 
     public Employee(String name, int age) {
         this.name = name;
         this.age = age;
     }
-    public Integer getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -35,7 +35,7 @@ public class App {
 			System.out.println(e.toString());
 		}
 		System.out.println(" =======DELETE ======= ");
-		delete(em2.getId());
+//		delete(em2.getId());
 		System.out.println(" =======READ =======");
 		List<Employee> ems3 = read();
 		for(Employee e: ems3) {
@@ -53,11 +53,8 @@ public class App {
 
 	public static SessionFactory getSessionFactory() {
 		Configuration configuration = new Configuration().configure();
-		StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
-				.applySettings(configuration.getProperties());
-		SessionFactory sessionFactory = configuration
-				.buildSessionFactory(builder.build());
-		return sessionFactory;
+		StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
+		return configuration.buildSessionFactory(builder.build());
 	}
 
 	public static Integer create(Employee e) {
@@ -67,7 +64,7 @@ public class App {
 		session.getTransaction().commit();
 		session.close();
 		System.out.println("Successfully created " + e.toString());
-		return e.getId();
+		return null;
 
 	}
 
