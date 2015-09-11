@@ -2,6 +2,7 @@ package com.madrona.hibernate;
 
 import java.util.List;
 
+import com.madrona.hibernate.model.Employee;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

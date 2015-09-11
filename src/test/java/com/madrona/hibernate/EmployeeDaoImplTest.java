@@ -1,6 +1,8 @@
 package com.madrona.hibernate;
 
 
+import com.madrona.hibernate.dao.EmployeeDao;
+import com.madrona.hibernate.model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;

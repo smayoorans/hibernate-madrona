@@ -1,4 +1,4 @@
-package com.madrona.hibernate;
+package com.madrona.hibernate.model;
 
 import javax.persistence.*;
 import java.io.Serializable;

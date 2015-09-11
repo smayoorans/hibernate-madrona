@@ -1,5 +1,6 @@
-package com.madrona.hibernate;
+package com.madrona.hibernate.dao;
 
+import com.madrona.hibernate.model.Employee;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
