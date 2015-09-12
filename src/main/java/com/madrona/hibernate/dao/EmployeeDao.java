@@ -6,4 +6,5 @@ public interface EmployeeDao {
 
     boolean save(Employee employee);
 
+    Employee findById(int id);
 }

@@ -25,5 +25,7 @@ public class EmployeeDaoImplTest extends AbstractTestNGSpringContextTests {
         employeeDao.save(em1);
 
         System.out.println("Inserted into database");
+
+        System.out.println("==========" + employeeDao.findById(1));
     }
 }

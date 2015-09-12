@@ -25,6 +25,12 @@
     <!-- Hibernate Session Factory -->
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="hibernate.cfg.xml"/>
+        <property name="packagesToScan">
+            <array>
+                <value>com.madrona.hibernate.model</value>
+            </array>
+        </property>
     </bean>
 
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">

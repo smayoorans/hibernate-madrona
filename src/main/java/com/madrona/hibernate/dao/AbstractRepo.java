@@ -3,13 +3,11 @@ package com.madrona.hibernate.dao;
 import com.madrona.hibernate.model.Employee;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,22 +29,16 @@ public abstract class AbstractRepo<T extends Serializable> implements Serializab
     protected T object;
     protected Class clazz;
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     public AbstractRepo(Class clazz) {
         this.clazz = clazz;
     }
 
-    public static SessionFactory getSessionFactory() {
-        Configuration configuration = new Configuration().configure();
-        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
+    public SessionFactory getSessionFactory() {
 
-        return configuration.buildSessionFactory(builder.build());
-    }
-
-    public static Employee findByID(Integer id) {
-        Session session = getSessionFactory().openSession();
-        Employee e = (Employee) session.load(Employee.class, id);
-        session.close();
-        return e;
+        return sessionFactory;
     }
 
     private Session getHibernateSession() {
@@ -77,6 +69,7 @@ public abstract class AbstractRepo<T extends Serializable> implements Serializab
         try {
             @SuppressWarnings("unchecked")
             T object = (T) session.load(clazz, id);
+
             return object;
         } catch (HibernateException ex) {
             LOGGER.error("Error occurred while retrieving {} details for id [{}], [{}]", clazz.getSimpleName(), id, ex);
