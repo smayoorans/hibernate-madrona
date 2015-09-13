@@ -16,7 +16,7 @@ public class Employee implements Serializable {
     private String name;
 
     @Column(name = "age")
-    private Integer age;
+    private int age;
 
     public Employee() {
     }
@@ -43,11 +43,11 @@ public class Employee implements Serializable {
         this.name = name;
     }
 
-    public Integer getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(Integer age) {
+    public void setAge(int age) {
         this.age = age;
     }
 

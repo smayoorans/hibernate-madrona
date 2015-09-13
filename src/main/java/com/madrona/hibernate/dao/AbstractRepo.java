@@ -1,11 +1,11 @@
 package com.madrona.hibernate.dao;
 
-import com.madrona.hibernate.model.Employee;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.*;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,29 +25,18 @@ public abstract class AbstractRepo<T extends Serializable> implements Serializab
 
     private static final Logger LOGGER = LogManager.getLogger(AbstractRepo.class);
 
-
-    protected T object;
-    protected Class clazz;
-
     @Autowired
     private SessionFactory sessionFactory;
+
+    protected Class clazz;
 
     public AbstractRepo(Class clazz) {
         this.clazz = clazz;
     }
 
-    public SessionFactory getSessionFactory() {
-
-        return sessionFactory;
-    }
-
-    private Session getHibernateSession() {
-        return getSessionFactory().openSession();
-    }
-
     protected boolean save(final T object) {
         LOGGER.info("Inserting new {} to database [{}]", clazz.getSimpleName(), object);
-        Session session = getSessionFactory().openSession();
+        Session session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();
             session.save(object);
@@ -57,19 +46,20 @@ public abstract class AbstractRepo<T extends Serializable> implements Serializab
         } catch (HibernateException ex) {
             LOGGER.error("Error occurred while inserting {} information  [{}], [{}] ", clazz.getSimpleName(), object, ex);
             return false;
-        } finally {
-            session.close();
         }
     }
 
     protected T getById(final long id) {
-        Session session = getSessionFactory().openSession();
-
         LOGGER.info("Retrieving {} details for id [{}]", clazz.getSimpleName(), id);
+        Session session = sessionFactory.getCurrentSession();
         try {
+            session.beginTransaction();
             @SuppressWarnings("unchecked")
-            T object = (T) session.load(clazz, id);
-
+//            T object = (T) session.load(clazz, id);
+                    Criteria criteria = session.createCriteria(clazz).add(Restrictions.eq("id", id));
+            @SuppressWarnings("unchecked")
+            T object = (T) criteria.uniqueResult();
+            session.getTransaction().commit();
             return object;
         } catch (HibernateException ex) {
             LOGGER.error("Error occurred while retrieving {} details for id [{}], [{}]", clazz.getSimpleName(), id, ex);
@@ -79,8 +69,11 @@ public abstract class AbstractRepo<T extends Serializable> implements Serializab
 
     protected boolean delete(final T object) {
         LOGGER.info("Deleting {} details from the database [{}]", clazz.getSimpleName(), object);
+        Session session = sessionFactory.getCurrentSession();
         try {
-            getHibernateSession().delete(object);
+            session.beginTransaction();
+            session.delete(object);
+            session.getTransaction().commit();
             return true;
         } catch (HibernateException ex) {
             LOGGER.error("Error occurred while deleting {} details from database, [{}]", clazz.getSimpleName(), ex);
@@ -91,41 +84,52 @@ public abstract class AbstractRepo<T extends Serializable> implements Serializab
 
     protected boolean update(final T object) {
         LOGGER.info("Updating {} information with new information of [{}]", clazz.getSimpleName(), object);
-        Session session = getSessionFactory().openSession();
+        Session session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();
-            getHibernateSession().update(object);
+            session.update(object);
             session.getTransaction().commit();
             LOGGER.info("{} information with new information of [{}] has been successfully updated.", clazz.getSimpleName(), object);
             return true;
         } catch (HibernateException ex) {
             LOGGER.error("Error occurred while updating the {} information [{}], [{}] ", clazz.getSimpleName(), object, ex);
             return false;
-        } finally {
-            session.close();
         }
     }
 
 
     protected List<T> getAll() {
         LOGGER.info("Retrieving all records of {} from  database.", clazz.getSimpleName());
-        Session session = getSessionFactory().openSession();
+        Session session = sessionFactory.getCurrentSession();
         try {
+            session.beginTransaction();
             Criteria criteria = session.createCriteria(clazz);
-            return (List<T>) criteria.list();
+            @SuppressWarnings("unchecked")
+            List<T> list = (List<T>) criteria.list();
+            session.getTransaction().commit();
+            return list;
         } catch (HibernateException ex) {
             LOGGER.error("Error occurred while retrieving records of [{}], [{}] ", clazz.getSimpleName(), ex);
             return new ArrayList<>();
-        } finally {
-            session.close();
         }
 
     }
 
 
     protected List<T> find(final String propertyName, final Object value) {
-        Criteria criteria = getHibernateSession().createCriteria(clazz)
-                .add(Restrictions.eq(propertyName, value));
-        return criteria.list();
+        LOGGER.info("Retrieving {} details for property [{}] and value [{}]", clazz.getSimpleName(), propertyName, value);
+        Session session = sessionFactory.getCurrentSession();
+        try {
+            session.beginTransaction();
+            Criteria criteria = session.createCriteria(clazz).add(Restrictions.eq(propertyName, value));
+            @SuppressWarnings("unchecked")
+            List<T> list = (List<T>) criteria.list();
+            session.getTransaction().commit();
+            return list;
+        } catch (HibernateException ex) {
+            LOGGER.error("Error occurred while retrieving {} details for property [{}], [{}]", clazz.getSimpleName(), propertyName, ex);
+            return null;
+        }
+
     }
 }
