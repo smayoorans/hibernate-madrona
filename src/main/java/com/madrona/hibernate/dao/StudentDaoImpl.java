@@ -29,11 +29,11 @@ public class StudentDaoImpl extends AbstractRepo<Student> implements StudentDao 
         return super.find(propertyName, value);
     }
 
-    public boolean delete(Student Student) {
-        return super.delete(Student);
+    public boolean delete(Student student) {
+        return super.delete(student);
     }
 
-    public boolean update(Student Student) {
-        return super.update(Student);
+    public boolean update(Student student) {
+        return super.update(student);
     }
 }

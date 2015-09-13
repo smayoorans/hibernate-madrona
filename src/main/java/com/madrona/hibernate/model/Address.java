@@ -1,15 +1,20 @@
 package com.madrona.hibernate.model;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Parameter;
+
 import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "address")
-public class Address implements Serializable {
+public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @GeneratedValue(generator = "gen")
+    @GenericGenerator(name = "gen", strategy = "foreign", parameters = @Parameter(name = "property", value = "student"))
     private Long id;
 
     @Column(name = "street")
@@ -18,7 +23,8 @@ public class Address implements Serializable {
     @Column(name = "city")
     private String city;
 
-
+    @OneToOne(cascade= CascadeType.ALL)
+    private Student student;
 
     public Address() {
     }
@@ -45,6 +51,14 @@ public class Address implements Serializable {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     @Override

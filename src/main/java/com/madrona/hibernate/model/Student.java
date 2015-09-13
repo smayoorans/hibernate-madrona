@@ -18,7 +18,8 @@ public class Student implements Serializable {
     @Column(name = "age")
     private int age;
 
-
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "student", fetch = FetchType.LAZY)
+    private Address address;
 
     public Student() {
     }
@@ -53,9 +54,21 @@ public class Student implements Serializable {
         this.age = age;
     }
 
-    @Override
-    public String toString() {
-        return "Employee: " + this.id + ", " + this.name + ", " + this.age;
+    public Address getAddress() {
+        return address;
     }
 
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", address=" + address +
+                '}';
+    }
 }
