@@ -57,7 +57,12 @@ public class EmployeeDaoImplTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(employeeByProperty.get(0).getAge(), 29);
         System.out.println("=======Find by property======" + employeeByProperty);
 
-        
+
+        //Delete
+        boolean deleted = employeeDao.delete(employeeByProperty.get(0));
+        Assert.assertEquals(deleted, true);
+
+
 
     }
 }
